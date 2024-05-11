@@ -1,0 +1,10 @@
+G.Wen English 4 Math 3 Physics 4 Chinese 2 History 2
+J.Smith Biology 5 Chemistry 4 History 3 History 3
+T.Lee Physics 5 Math 4 English 3 Mechanics 4
+A.Jones Chemistry 4 Physics 3 Biology 4 
+K.Wang Math 5 History 4 English 3 Geology 3 Physics 2
+S.Garcia History 4 Biology 3 Chemistry 5 Biology 3 History 3
+M.Liu English 5 Physics 4 Math 3 Geology 1
+R.Kim Biology 4 English 3 History 5 Chinese 2 Physics 3
+B.Singh Chemistry 1 History 4 Biology 3 Mechanics 3
+L.Zhang Physics 4 English 3 Chemistry 5 Biology 2
