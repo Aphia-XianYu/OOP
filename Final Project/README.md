@@ -57,7 +57,7 @@ struct UserDefinedType {
 2. comments quality: succinct and accurate
 3. correctness and running performance
 
-##Files to Submit
+## Files to Submit
 
 Please prepare a .zip package including the following items：
 
