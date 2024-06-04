@@ -18,7 +18,7 @@ serialize(n0, "n.data");
 deserialize(n1, "n.data");
 // now n0 == n1 should be true.
 ```
-- Implement a wrapper module of [TinyXML2](github.com/leethomason/tinyxml2) to support **XML** serialization:
+- Implement a wrapper module of [tinyxml2](https://github.com/leethomason/tinyxml2) to support **XML** serialization:
 ```
 std::pair<int, double> pair0 = {2, 3.1}, pair1;
 // serialize object pair0 to an XML file pair.xml with the name std_pair
