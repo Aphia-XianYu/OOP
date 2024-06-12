@@ -8,9 +8,10 @@
 #include<fstream>
 #include <type_traits>
 #include<typeinfo>
+#include<tuple>
 
 
-namespace My_Serialize {
+namespace XianYu_Serialize {
     class DataStream {
     public:
         enum DataType {
@@ -26,7 +27,6 @@ namespace My_Serialize {
             LIST,
             MAP,
             SET,
-            CUSTOM
         };
 
         DataStream() = default;
@@ -41,7 +41,9 @@ namespace My_Serialize {
         void write(size_t value);
         void write(const char* value);
         void write(const std::string& value);
-
+        
+        template<typename T>
+        void write(const T& value);
         template<typename T, typename U>
         void write(const std::pair<T, U>& value);
         template<typename T>
@@ -61,6 +63,8 @@ namespace My_Serialize {
         bool read(size_t& value);
         bool read(std::string& value);
 
+        template <typename T>
+        bool read(T& value);
         template<typename T, typename U>
         bool read(std::pair<T, U>& value);
         template<typename T>
@@ -71,7 +75,10 @@ namespace My_Serialize {
         bool read(std::map<T, U>& value);
         template<typename T>
         bool read(std::set<T>& value);
-
+        
+        inline bool checkflag()const{ 
+            return read_flag; 
+        }
 
         template<typename T>
         DataStream& operator<<(const T& value);
@@ -87,10 +94,11 @@ namespace My_Serialize {
         std::vector<char> m_buf;
         void inflate(int len);
         int m_pos = 0;
+        bool read_flag;
+
+        
 
     };
-
-
 
     void DataStream::inflate(int len) {
         int size = m_buf.size();
@@ -156,6 +164,7 @@ namespace My_Serialize {
         write(len);
         write(value.data(), len);
     }
+
 
     template<typename T, typename U>
     void DataStream::write(const std::pair<T, U>& value) {
@@ -264,7 +273,6 @@ namespace My_Serialize {
         ++m_pos;
         size_t len;
         read(len);
-        std::cout << len << std::endl;
         if (len < 0) {
             return false;
         }
@@ -273,6 +281,7 @@ namespace My_Serialize {
         return true;
 
     }
+
 
     template<typename T, typename U>
     bool DataStream::read(std::pair<T, U>& value) {
@@ -288,6 +297,7 @@ namespace My_Serialize {
         read(pair_second);
         value.first = pair_first;
         value.second = pair_second;
+        return true;
     }
     template<typename T>
     bool DataStream::read(std::vector<T>& value) {
@@ -332,7 +342,7 @@ namespace My_Serialize {
             read(map_second);
             value.emplace(std::make_pair(map_first, map_second));
         }
-
+        return true;
     }
     template<typename T>
     bool DataStream::read(std::set<T>& value) {
@@ -352,7 +362,10 @@ namespace My_Serialize {
 
     template<typename T>
     DataStream& DataStream::operator>>(T& value) {
-        read(value);
+        if (read(value))
+            read_flag = true;
+        else
+            read_flag = false;
         return *this;
     }
     template<typename T>
@@ -360,7 +373,6 @@ namespace My_Serialize {
         write(value);
         return *this;
     }
-
 
     template<typename T>
     void serialize(const T& value, const std::string filename) {
@@ -392,6 +404,18 @@ namespace My_Serialize {
         else {
             std::cerr << "Error: Failed to open file" << std::endl;
         }
+    }
+
+    template<typename T>
+    struct Serializer;
+
+    template<typename T>
+    void DataStream::write(const T& value) {
+        Serializer<T>::apply(*this, value);
+    }
+    template<typename T>
+    bool DataStream::read(T& value) {
+        return Serializer<T>::extract(*this, value);
     }
 
 }
